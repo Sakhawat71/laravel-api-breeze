@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,3 +20,7 @@ Route::post('/users', function(Request $request){
     $user = User::create($request->all());
     return new UserResource($user);
 });
+
+// login api
+Route::post('/login', [AuthController::class,'Login']);
+
