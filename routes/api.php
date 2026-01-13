@@ -8,3 +8,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/users', function(){
     return UserResource::collection(User::all());
 });
+
+// get single user
+Route::get('/users/{id}',function(string $id){
+    return new UserResource(User::findOrFail($id));
+});
+
+// create user
+Route::post('/users', function(Request $request){
+    $user = User::create($request->all());
+    return new UserResource($user);
+});
