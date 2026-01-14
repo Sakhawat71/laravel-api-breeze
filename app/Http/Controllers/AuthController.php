@@ -34,33 +34,6 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
-    // login controller
-    // public function Login(Request $request){
-    //     $fields = $request->validate([
-    //         'email' => 'required|string',
-    //         'password' => 'required|string'
-    //     ]);
-
-    //     // check email
-    //     $user = User::where('email', $fields['email'])->first();
-
-    //     // check password
-    //     if(!$user || !bcrypt($fields['password'], $user->password)){
-    //         return response([
-    //             'message' => 'Bad creds'
-    //         ], 401);
-    //     }
-
-    //     $token = $user->createToken('myapptoken')->plainTextToken;
-
-    //     $response = [
-    //         'user' => $user,
-    //         'token' => $token
-    //     ];
-    //     return response($response, 201);
-    // }
-
-
     // login controller 
     public function Login(Request $request)
     {
@@ -91,8 +64,20 @@ class AuthController extends Controller
 
 
     // logout controller
-    public function Logout() {
-        Auth::logout();
+    // public function Logout() {
+    //     Auth::logout();
+    //     return response()->json([
+    //         'status' => 200,
+    //         'success' => true,
+    //         'message' => 'User logged out successfully'
+    //     ]);
+    // }
+
+
+    // logout controller
+    public function Logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'status' => 200,
             'success' => true,
@@ -101,7 +86,8 @@ class AuthController extends Controller
     }
 
     // profile controller
-    public function Profile() {
+    public function Profile()
+    {
         $user = Auth::user();
         return response()->json([
             'status' => 200,

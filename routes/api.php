@@ -5,6 +5,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
 Route::get('/users', function(){
     return UserResource::collection(User::all());
@@ -30,4 +31,6 @@ Route::group([
 ], function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
+
+    Route::apiResource('/products', ProductController::class);
 });
