@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     // regiister controller
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|confirmed'
+            'password' => 'required'
         ]);
 
         $user = User::create([
@@ -25,7 +27,8 @@ class AuthController extends Controller
 
         $response = [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
+            "message" => 'User registered successfully',
         ];
 
         return response($response, 201);
@@ -57,18 +60,53 @@ class AuthController extends Controller
     //     return response($response, 201);
     // }
 
-    // login controller 
-    public function Login(Request $request){
 
+    // login controller 
+    public function Login(Request $request)
+    {
+        $fields = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'status' => 404,
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ]);
+        };
+
+        $user = Auth::user();
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'user' => $user,
+            'token' => $token,
+            'message' => 'User logged in successfully'
+        ]);
     }
 
-    // logout controller
-    public function Logout(){
 
+    // logout controller
+    public function Logout() {
+        Auth::logout();
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'User logged out successfully'
+        ]);
     }
 
     // profile controller
-    public function Profile(){
-        
+    public function Profile() {
+        $user = Auth::user();
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'user' => $user
+        ]);
     }
 };
