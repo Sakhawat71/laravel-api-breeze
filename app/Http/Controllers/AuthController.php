@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    // regiister api
+    // regiister controller
     public function register(Request $request){
         $fields = $request->validate([
             'name' => 'required|string',
@@ -31,7 +31,7 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
-    // login api
+    // login controller
     // public function Login(Request $request){
     //     $fields = $request->validate([
     //         'email' => 'required|string',
@@ -57,17 +57,17 @@ class AuthController extends Controller
     //     return response($response, 201);
     // }
 
-    // login api 
+    // login controller 
     public function Login(Request $request){
-        
+
     }
 
-    // logout api
+    // logout controller
     public function Logout(){
 
     }
 
-    // profile api
+    // profile controller
     public function Profile(){
         
     }
