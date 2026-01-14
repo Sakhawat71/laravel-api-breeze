@@ -11,10 +11,23 @@ class AuthController extends Controller
     // regiister controller
     public function register(Request $request)
     {
+        // $fields = $request->validate([
+        //     'name' => 'required|string',
+        //     'email' => 'required|string|unique:users,email',
+        //     'password' => 'required'
+        // ]);
         $fields = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required'
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|min:6'
+        ], [
+            // Custom messages
+            'name.required' => 'Please provide your name',
+            'email.required' => 'Email address is required',
+            'email.email' => 'Please provide a valid email address',
+            'email.unique' => 'This email is already registered. Try logging in instead.',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 6 characters long'
         ]);
 
         $user = User::create([
@@ -44,7 +57,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'status' => 404,
+                'status' => 401,
                 'success' => false,
                 'message' => 'Invalid credentials'
             ]);
