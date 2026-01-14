@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -31,9 +32,9 @@ class ProductController extends Controller
         ]);
 
         $data['user_id'] = auth()->user()->id;
-        
-        if($request->hasFile('image_url')){
-            $request->file('image_url')->store("products",'public');
+
+        if ($request->hasFile('image_url')) {
+            $request->file('image_url')->store("products", 'public');
         };
 
         Product::created($data);
@@ -50,7 +51,12 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'product' => Product::findOrFail($id)
+            // 'product' => $products
+        ]);
     }
 
     /**
@@ -58,7 +64,30 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate([
+            'title' => 'sometimes|required|string|max:80',
+            'price' => 'sometimes|required|numeric',
+        ]);
+
+        $product = Product::findOrFail($id);
+
+        if ($request->hasFile('image_url')) {
+            // Storage::disk('public')->delete(Product::find($id)->image_url);
+            if ($product->image_url) {
+                Storage::disk('public')->delete($product->image_url);
+            };
+
+            $data['image_url'] = $request->file('image_url')->store("products", 'public');
+        };
+
+        // Product::where('id', $id)->update($data);
+        $product->update($data);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Product updated successfully'
+        ]);
     }
 
     /**
@@ -66,6 +95,12 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Product::where('id', $id)->delete();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Product deleted successfully'
+        ]);
     }
 }
