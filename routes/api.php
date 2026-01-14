@@ -21,6 +21,7 @@ Route::post('/users', function(Request $request){
     return new UserResource($user);
 });
 
-// login api
+// auth api
+Route::post('/register',[AuthController::class, 'register']);
 Route::post('/login', [AuthController::class,'Login']);
 

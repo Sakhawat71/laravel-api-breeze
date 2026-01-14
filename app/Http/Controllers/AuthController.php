@@ -59,7 +59,7 @@ class AuthController extends Controller
 
     // login api 
     public function Login(Request $request){
-
+        
     }
 
     // logout api
