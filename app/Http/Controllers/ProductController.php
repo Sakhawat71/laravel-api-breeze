@@ -29,20 +29,27 @@ class ProductController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:80',
             'price' => 'required|numeric',
+            'description' => 'nullable|string',
+            'image_url' => 'nullable|image|max:5150'
         ]);
 
         $data['user_id'] = auth()->user()->id;
 
-        if ($request->hasFile('image_url')) {
-            $request->file('image_url')->store("products", 'public');
-        };
+        // if ($request->hasFile('image_url')) {
+        //     $request->file('image_url')->store("products", 'public');
+        // };
 
-        Product::created($data);
+        if ($request->hasFile('image_url')) {
+            $data['image_url'] = $request->file('image_url')->store("products", 'public');
+        }
+
+        Product::create($data);
 
         return response()->json([
             'status' => 201,
             'success' => true,
-            'message' => 'Product created successfully'
+            'message' => 'Product created successfully',
+            'product' => $data
         ]);
     }
 
